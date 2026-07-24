@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="RegistryKit/RegistryKit.csproj" Id="1c0c467a-9941-4e34-8551-1025b6145895" />
+  <Project Path="RegistryKitTests/RegistryKitTests.csproj" Id="29f53f32-5f13-474e-8401-a076a36581da" />
   <Project Path="ReluctersteSDK/ReluctersteSDK.csproj" />
 </Solution>

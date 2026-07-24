@@ -1,7 +1,4 @@
 using ReluctersteSDK.CoordinatesPackage.Vector;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ReluctersteSDK.CoordinatesPackage.Models
 {

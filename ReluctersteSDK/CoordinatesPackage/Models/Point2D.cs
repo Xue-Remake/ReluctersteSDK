@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using ReluctersteSDK.CoordinatesPackage.Vector;
 
 namespace ReluctersteSDK.CoordinatesPackage.Models
 {
