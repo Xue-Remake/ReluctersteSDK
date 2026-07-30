@@ -1,4 +1,6 @@
 using Microsoft.Data.Sqlite;
+using ReluctersteSDK.PathHelper;
+using ReluctersteSDK.PathHelper.Tools;
 using System.Text;
 
 namespace ReluctersteSDK.SimpleSqliteORM
@@ -34,6 +36,33 @@ namespace ReluctersteSDK.SimpleSqliteORM
             if (string.IsNullOrWhiteSpace(databaseName))
                 throw new ArgumentException("Database name cannot be null or empty.", nameof(databaseName));
             _folderPath = folderPath;
+            _databaseName = databaseName;
+            _enableWal = enableWal;
+            Directory.CreateDirectory(_folderPath);
+            DatabasePath = Path.Combine(_folderPath, _databaseName);
+            var builder = new SqliteConnectionStringBuilder
+            {
+                DataSource = DatabasePath,
+                Cache = SqliteCacheMode.Shared,
+                Mode = SqliteOpenMode.ReadWriteCreate
+            };
+            _connectionString = builder.ToString();
+        }
+        /// <summary>
+        /// 初始化 <see cref="SqliteDataBase"/> 实例。路径参数为FdPath类型的重载
+        /// </summary>
+        /// <param name="folderPath">数据库文件所在的文件夹路径（FdPath类型）。</param>
+        /// <param name="databaseName">数据库文件名。</param>
+        /// <param name="enableWal">是否启用 WAL 模式（默认启用）。</param>
+        /// <exception cref="ArgumentException">参数为 null 或空白时抛出。</exception>
+        public SqliteDataBase(FdPath folderPath, string databaseName, bool enableWal = true)
+        {
+            var fdPath =  PathAnalyzer.Analysis(folderPath)?.PathStr;
+            if (string.IsNullOrWhiteSpace(fdPath))
+                throw new ArgumentException("Folder path cannot be null or empty.", nameof(fdPath));
+            if (string.IsNullOrWhiteSpace(databaseName))
+                throw new ArgumentException("Database name cannot be null or empty.", nameof(databaseName));
+            _folderPath = fdPath;
             _databaseName = databaseName;
             _enableWal = enableWal;
             Directory.CreateDirectory(_folderPath);

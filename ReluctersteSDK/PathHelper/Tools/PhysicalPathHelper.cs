@@ -96,6 +96,73 @@ namespace ReluctersteSDK.PathHelper.Tools
             return InternalEnsureDirectoryExists(absPath) ? absPath : null;
         }
         /// <summary>
+        /// 搜索指定路径下的文件，返回所有符合要求的绝对路径列表
+        /// </summary>
+        /// <param name="folderPath">文件夹路径字符串（支持绝对/相对路径）</param>
+        /// <param name="checkSubDirectories">是否递归检查子文件夹中的文件，默认仅检查当前顶级目录</param>
+        /// <param name="predicate">可选的 LINQ 筛选表达式（传入文件绝对路径 string）</param>
+        /// <returns>符合条件的文件绝对路径对象 <see cref="AbsolutePath"/> 的 List；若路径无效或目录不存在则返回空列表</returns>
+        public static List<AbsolutePath> GetFiles(
+            string folderPath,
+            bool checkSubDirectories = false,
+            Func<string, bool>? predicate = null)
+        {
+            AbsolutePath? absPath = PathAnalyzer.Analysis(folderPath);
+            if (absPath == null) return new List<AbsolutePath>();
+            return InternalGetFiles(absPath.PathStr, checkSubDirectories, predicate);
+        }
+
+        /// <summary>
+        /// 搜索指定路径下的文件，返回所有符合要求的绝对路径列表
+        /// </summary>
+        /// <param name="folderPath">文件夹路径对象</param>
+        /// <param name="checkSubDirectories">是否递归检查子文件夹中的文件，默认仅检查当前顶级目录</param>
+        /// <param name="predicate">可选的 LINQ 筛选表达式（传入文件绝对路径 string）</param>
+        /// <returns>符合条件的文件绝对路径对象 <see cref="AbsolutePath"/> 的 List；若路径无效或目录不存在则返回空列表</returns>
+        public static List<AbsolutePath> GetFiles(
+            FdPath folderPath,
+            bool checkSubDirectories = false,
+            Func<string, bool>? predicate = null)
+        {
+            AbsolutePath? absPath = PathAnalyzer.Analysis(folderPath);
+            if (absPath == null) return new List<AbsolutePath>();
+            return InternalGetFiles(absPath.PathStr, checkSubDirectories, predicate);
+        }
+
+        /// <summary>
+        /// 内部执行：获取文件列表核心逻辑（支持 Linq 委托筛选）
+        /// </summary>
+        private static List<AbsolutePath> InternalGetFiles(
+            string absolutePathStr,
+            bool checkSubDirectories,
+            Func<string, bool>? predicate)
+        {
+            var result = new List<AbsolutePath>();
+            if (!Directory.Exists(absolutePathStr)) return result;
+
+            try
+            {
+                SearchOption option = checkSubDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+                IEnumerable<string> files = Directory.EnumerateFiles(absolutePathStr, "*", option);
+
+                if (predicate != null)
+                {
+                    files = files.Where(predicate);
+                }
+
+                foreach (string filePath in files)
+                {
+                    result.Add(new AbsolutePath(filePath));
+                }
+            }
+            catch
+            {
+                // 捕捉无权限访问等异常，确保安全性
+            }
+
+            return result;
+        }
+        /// <summary>
         /// 内部执行：确保目录存在的核心逻辑
         /// </summary>
         private static bool InternalEnsureDirectoryExists(AbsolutePath absPath)

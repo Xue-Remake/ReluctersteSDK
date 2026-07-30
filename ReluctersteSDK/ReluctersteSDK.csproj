@@ -5,17 +5,19 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Authors>XueRemake</Authors>
-		<Version>0.8.0.0</Version>
+		<Version>0.8.2.4</Version>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<Company>Relucterste Digital Studio</Company>
+		<Copyright>Copyright © 2026 Relucterste Digital Studio. All rights reserved.</Copyright>
+		<Description>一个简单的开发工具，目前有CommandHelper，CoordinatesPackage，LlmHelper，QuickRandom等小型工具；以及一个的自制ORM：SimpleSqliteORM</Description>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Include="..\LICENSE.txt">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
+		<None Include="..\LICENSE.txt">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>

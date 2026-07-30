@@ -1,7 +1,8 @@
-namespace ReluctersteSDK.QuickRandom
+namespace ReluctersteSDK.MathTool.QuickRandom
 {
     public static class BasicRandomGen
     {
+#pragma warning disable CS8602 // 抑制警告：解引用可能出现空引用
         // ========== ThreadLocal 保证线程安全 ==========
         private static int _seed = Environment.TickCount;
         private static readonly ThreadLocal<Random> Rng = new ThreadLocal<Random>(() =>
@@ -73,6 +74,7 @@ namespace ReluctersteSDK.QuickRandom
                 throw new ArgumentException("min, max, k 必须满足 min ≤ k ≤ max");
 
             int scale = Math.Max(Math.Max(GetDecimalScale(dMin), GetDecimalScale(dMax)), GetDecimalScale(dK));
+
             double r = Rng.Value.NextDouble();
 
             if (r < p)
@@ -182,5 +184,6 @@ namespace ReluctersteSDK.QuickRandom
             }
             return (T)Convert.ChangeType(value, t);
         }
+#pragma warning restore CS8602
     }
 }
