@@ -4,19 +4,22 @@ namespace ReluctersteSDK.RegistryKit
 {
     /// <summary>
     /// 通用键值对注册表，支持对单个条目进行启用/禁用（线程安全）。
+    /// 条目不可变，更新通过 ConcurrentDictionary 原子替换完成。
     /// </summary>
     public class ValueRegistry<TKey, TValue>
     {
-        private class Entry
+        private sealed class Entry
         {
-            public TValue Value;
-            public volatile bool Enabled;
+            public readonly TValue Value;
+            public readonly bool Enabled;
 
-            public Entry(TValue value, bool enabled = true)
+            public Entry(TValue value, bool enabled)
             {
                 Value = value;
                 Enabled = enabled;
             }
+
+            public Entry WithEnabled(bool enabled) => new(Value, enabled);
         }
 
         private readonly ConcurrentDictionary<TKey, Entry> _store;
@@ -26,7 +29,9 @@ namespace ReluctersteSDK.RegistryKit
             _store = new ConcurrentDictionary<TKey, Entry>();
         }
 
-        /// <summary>注册或覆盖一个值。若键已存在，仅更新值，保持原有启用状态；新键默认启用。</summary>
+        /// <summary>
+        /// 注册或覆盖一个值。若键已存在，仅更新值并保持原有启用状态；新键默认启用。
+        /// </summary>
         public void Register(TKey key, TValue value)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
@@ -34,33 +39,30 @@ namespace ReluctersteSDK.RegistryKit
             _store.AddOrUpdate(
                 key,
                 _ => new Entry(value, true),
-                (_, existing) =>
-                {
-                    existing.Value = value;
-                    return existing;
-                });
+                (_, existing) => new Entry(value, existing.Enabled));
         }
 
         /// <summary>启用指定键的条目</summary>
         public bool Enable(TKey key)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            if (_store.TryGetValue(key, out var entry))
-            {
-                entry.Enabled = true;
-                return true;
-            }
-            return false;
+            return SetEnabled(key, true);
         }
 
         /// <summary>禁用指定键的条目</summary>
         public bool Disable(TKey key)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
-            if (_store.TryGetValue(key, out var entry))
+            return SetEnabled(key, false);
+        }
+
+        private bool SetEnabled(TKey key, bool enabled)
+        {
+            while (_store.TryGetValue(key, out var entry))
             {
-                entry.Enabled = false;
-                return true;
+                if (entry.Enabled == enabled) return true;
+                if (_store.TryUpdate(key, entry.WithEnabled(enabled), entry))
+                    return true;
             }
             return false;
         }
@@ -74,7 +76,7 @@ namespace ReluctersteSDK.RegistryKit
                 value = entry.Value;
                 return true;
             }
-            value = default;
+            value = default!;
             return false;
         }
 

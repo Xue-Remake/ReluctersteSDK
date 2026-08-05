@@ -4,19 +4,22 @@ namespace ReluctersteSDK.RegistryKit
 {
     /// <summary>
     /// 委托注册表：按名称存储委托，支持对单个委托条目启用/禁用（线程安全）。
+    /// 条目不可变，更新通过 ConcurrentDictionary 原子替换完成。
     /// </summary>
     public class DelegateRegistry
     {
-        private class DelegateEntry
+        private sealed class DelegateEntry
         {
-            public Delegate Delegate;
-            public volatile bool Enabled;
+            public readonly Delegate Delegate;
+            public readonly bool Enabled;
 
-            public DelegateEntry(Delegate del, bool enabled = true)
+            public DelegateEntry(Delegate del, bool enabled)
             {
                 Delegate = del;
                 Enabled = enabled;
             }
+
+            public DelegateEntry WithEnabled(bool enabled) => new(Delegate, enabled);
         }
 
         private readonly ConcurrentDictionary<string, DelegateEntry> _delegates;
@@ -26,7 +29,9 @@ namespace ReluctersteSDK.RegistryKit
             _delegates = new ConcurrentDictionary<string, DelegateEntry>();
         }
 
-        /// <summary>注册委托。新项默认启用；若名称已存在则替换委托并保持原启用状态。</summary>
+        /// <summary>
+        /// 注册委托。新项默认启用；若名称已存在则替换委托并保持原启用状态。
+        /// </summary>
         public void Register(string name, Delegate del)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
@@ -35,11 +40,7 @@ namespace ReluctersteSDK.RegistryKit
             _delegates.AddOrUpdate(
                 name,
                 _ => new DelegateEntry(del, true),
-                (_, existing) =>
-                {
-                    existing.Delegate = del;
-                    return existing;
-                });
+                (_, existing) => new DelegateEntry(del, existing.Enabled));
         }
 
         // 便捷重载
@@ -52,22 +53,23 @@ namespace ReluctersteSDK.RegistryKit
         public bool Enable(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
-            if (_delegates.TryGetValue(name, out var entry))
-            {
-                entry.Enabled = true;
-                return true;
-            }
-            return false;
+            return SetEnabled(name, true);
         }
 
         /// <summary>禁用指定名称的委托</summary>
         public bool Disable(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
-            if (_delegates.TryGetValue(name, out var entry))
+            return SetEnabled(name, false);
+        }
+
+        private bool SetEnabled(string name, bool enabled)
+        {
+            while (_delegates.TryGetValue(name, out var entry))
             {
-                entry.Enabled = false;
-                return true;
+                if (entry.Enabled == enabled) return true;
+                if (_delegates.TryUpdate(name, entry.WithEnabled(enabled), entry))
+                    return true;
             }
             return false;
         }
