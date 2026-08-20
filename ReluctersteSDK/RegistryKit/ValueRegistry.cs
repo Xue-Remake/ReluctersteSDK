@@ -30,6 +30,15 @@ namespace ReluctersteSDK.RegistryKit
         }
 
         /// <summary>
+        /// 索引器：获取或注册/覆盖值（获取未找到或被禁用时返回 default）
+        /// </summary>
+        public TValue? this[TKey key]
+        {
+            get => GetValue(key);
+            set => Register(key, value!);
+        }
+
+        /// <summary>
         /// 注册或覆盖一个值。若键已存在，仅更新值并保持原有启用状态；新键默认启用。
         /// </summary>
         public void Register(TKey key, TValue value)
@@ -65,6 +74,38 @@ namespace ReluctersteSDK.RegistryKit
                     return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// 根据键获取对应的值（忽略禁用条目）。
+        /// 若不存在或被禁用，则返回 default。
+        /// </summary>
+        /// <param name="key">要查询的键</param>
+        /// <returns>启用的值，若未找到或已禁用则返回 default</returns>
+        public TValue? GetValue(TKey key)
+        {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            return _store.TryGetValue(key, out var entry) && entry.Enabled ? entry.Value : default;
+        }
+
+        /// <summary>
+        /// 根据谓词条件获取第一个匹配的已启用的值。
+        /// 若未找到匹配项，则返回 default。
+        /// </summary>
+        /// <param name="predicate">筛选条件</param>
+        /// <returns>匹配的值，未找到则返回 default</returns>
+        public TValue? GetValue(Func<TValue, bool> predicate)
+        {
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+
+            foreach (var kvp in _store)
+            {
+                if (kvp.Value.Enabled && predicate(kvp.Value.Value))
+                {
+                    return kvp.Value.Value;
+                }
+            }
+            return default;
         }
 
         /// <summary>尝试获取值（忽略禁用条目）</summary>
@@ -110,6 +151,14 @@ namespace ReluctersteSDK.RegistryKit
         {
             return _store.Where(kvp => kvp.Value.Enabled)
                          .Select(kvp => kvp.Key)
+                         .ToList();
+        }
+
+        /// <summary>获取所有已启用的值的集合</summary>
+        public ICollection<TValue> Values()
+        {
+            return _store.Where(kvp => kvp.Value.Enabled)
+                         .Select(kvp => kvp.Value.Value)
                          .ToList();
         }
 
