@@ -479,6 +479,19 @@ namespace ReluctersteSDK.SimpleSqliteORM
             return entity;
         }
         /// <summary>
+        /// 读取指定实体对应的表中的所有数据。
+        /// </summary>
+        /// <typeparam name="T">实体类型。</typeparam>
+        /// <returns>实体列表。</returns>
+        public async Task<List<T>> GetAllAsync<T>()
+            where T : new()
+        {
+            // 确保表存在（幂等操作）
+            await EnsureTableAsync<T>().ConfigureAwait(false);
+            // 查询所有记录
+            return await QueryAsync<T>().ConfigureAwait(false);
+        }
+        /// <summary>
         /// 执行自定义 SQL 查询，并通过投影函数将每一行转换为结果对象。
         /// </summary>
         /// <typeparam name="TResult">结果类型。</typeparam>
