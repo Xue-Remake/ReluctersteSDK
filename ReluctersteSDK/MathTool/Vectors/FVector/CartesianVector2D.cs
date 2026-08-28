@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework;
 using System.Runtime.CompilerServices;
 
 namespace ReluctersteSDK.MathTool.Vectors
@@ -261,5 +262,9 @@ namespace ReluctersteSDK.MathTool.Vectors
 
         /// <summary>返回表示当前向量的字符串格式。</summary>
         public override string ToString() => $"({X:0.###}, {Y:0.###})";
+        public static implicit operator Vector2(CartesianVector2D cartesianVector2D)
+        {
+            return new Vector2(cartesianVector2D.X, cartesianVector2D.Y);
+        }
     }
 }

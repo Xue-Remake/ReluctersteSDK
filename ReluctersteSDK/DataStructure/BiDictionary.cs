@@ -1,7 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ReluctersteSDK.DataStructure
 {
@@ -85,7 +82,18 @@ namespace ReluctersteSDK.DataStructure
             _forward.Add(key, value);
             _reverse.Add(value, key);
         }
+        public void Add(ValueTuple<TKey, TValue> temp)
+        {
+            if (temp.Item1 == null || temp.Item2 == null) throw new ArgumentNullException(nameof(temp));
+            if (_forward.ContainsKey(temp.Item1))
+                throw new ArgumentException($"Key '{temp.Item1}' 已经存在。");
 
+            if (_reverse.ContainsKey(temp.Item2))
+                throw new ArgumentException($"Value '{temp.Item2}' 已经存在（BiDictionary 要求 Value 也是唯一的）。");
+
+            _forward.Add(temp.Item1, temp.Item2);
+            _reverse.Add(temp.Item2, temp.Item1);
+        }
         public void AddOrUpdate(TKey key, TValue value)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));

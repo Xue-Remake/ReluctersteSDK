@@ -57,7 +57,7 @@ namespace ReluctersteSDK.SimpleSqliteORM
         /// <exception cref="ArgumentException">参数为 null 或空白时抛出。</exception>
         public SqliteDataBase(FdPath folderPath, string databaseName, bool enableWal = true)
         {
-            var fdPath =  PathAnalyzer.Analysis(folderPath)?.PathStr;
+            var fdPath = PathAnalyzer.Analysis(folderPath)?.PathStr;
             if (string.IsNullOrWhiteSpace(fdPath))
                 throw new ArgumentException("Folder path cannot be null or empty.", nameof(fdPath));
             if (string.IsNullOrWhiteSpace(databaseName))
