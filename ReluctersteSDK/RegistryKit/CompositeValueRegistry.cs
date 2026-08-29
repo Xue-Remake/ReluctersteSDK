@@ -68,7 +68,7 @@ namespace ReluctersteSDK.RegistryKit
         {
             _store = new ConcurrentDictionary<CompositeKey, Entry>();
         }
-        #region 索引器 Indexers (Key 在前)
+        #region 索引器 Indexers
         /// <summary>
         /// 通过 CompositeKey 获取或注册/覆盖值
         /// </summary>
@@ -89,7 +89,6 @@ namespace ReluctersteSDK.RegistryKit
                 _ => new Entry(value, true),
                 (_, existing) => new Entry(value, existing.Enabled));
         }
-        // --- 常用多列快捷重载 (Key 前, Value 后) ---
         /// <summary>双列 Key 注册</summary>
         public void Register<T1, T2>(T1 k1, T2 k2, TValue value)
             => Register(new CompositeKey(k1, k2), value);
@@ -118,7 +117,7 @@ namespace ReluctersteSDK.RegistryKit
             return false;
         }
         #endregion
-        #region 查询与获取 Get / TryGet
+        #region 单项查询 Get / TryGet
         /// <summary>根据复合键获取对应的值（忽略禁用条目）</summary>
         public TValue? GetValue(CompositeKey key)
         {
@@ -141,7 +140,7 @@ namespace ReluctersteSDK.RegistryKit
             }
             return default;
         }
-        /// <summary>尝试获取值（ Key 在前，out Value 在后）</summary>
+        /// <summary>尝试获取值（Key 在前，out Value 在后）</summary>
         public bool TryGetValue(CompositeKey key, out TValue value)
         {
             if (_store.TryGetValue(key, out var entry) && entry.Enabled)
@@ -158,8 +157,21 @@ namespace ReluctersteSDK.RegistryKit
         /// <summary>三列 Key TryGet</summary>
         public bool TryGetValue<T1, T2, T3>(T1 k1, T2 k2, T3 k3, out TValue value)
             => TryGetValue(new CompositeKey(k1, k2, k3), out value);
-        /// <summary>获取所有已启用且满足谓词条件的值列表</summary>
+        /// <summary>获取所有已启用且满足谓词条件的值列表（out 参数版本）</summary>
         public bool TryGetValue(Func<TValue, bool> predicate, out IList<TValue> values)
+        {
+            values = Query(predicate);
+            return values.Count > 0;
+        }
+        #endregion
+        #region 列表查询 Query (返回 IList<TValue> 结果列表)
+        /// <summary>
+        /// 根据谓词条件查询所有已启用的匹配项，并直接返回结果列表。
+        /// 若未找到匹配项则返回空列表（非 null）。
+        /// </summary>
+        /// <param name="predicate">针对 Value 的筛选条件</param>
+        /// <returns>匹配的值列表</returns>
+        public IList<TValue> Query(Func<TValue, bool> predicate)
         {
             if (predicate == null) throw new ArgumentNullException(nameof(predicate));
             var entries = _store.ToArray();
@@ -169,10 +181,27 @@ namespace ReluctersteSDK.RegistryKit
                 if (kvp.Value.Enabled && predicate(kvp.Value.Value))
                     result.Add(kvp.Value.Value);
             }
-            values = result;
-            return result.Count > 0;
+            return result;
         }
-        /// <summary>根据 Key 的前缀列模糊获取已启用的值</summary>
+        /// <summary>
+        /// 根据谓词条件（同时包含 Key 与 Value）查询所有已启用的匹配项，并直接返回结果列表。
+        /// 若未找到匹配项则返回空列表（非 null）。
+        /// </summary>
+        /// <param name="predicate">针对 Key 和 Value 的复合筛选条件</param>
+        /// <returns>匹配的值列表</returns>
+        public IList<TValue> Query(Func<CompositeKey, TValue, bool> predicate)
+        {
+            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
+            var entries = _store.ToArray();
+            var result = new List<TValue>(entries.Length);
+            foreach (var kvp in entries)
+            {
+                if (kvp.Value.Enabled && predicate(kvp.Key, kvp.Value.Value))
+                    result.Add(kvp.Value.Value);
+            }
+            return result;
+        }
+        /// <summary>根据 Key 的前缀列模糊查询所有已启用的值列表</summary>
         public IList<TValue> GetValuesByPrefix(params object[] prefixKeys)
         {
             if (prefixKeys == null || prefixKeys.Length == 0)
