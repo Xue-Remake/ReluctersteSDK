@@ -4,6 +4,5 @@
   <Project Path="RegistryKit/RegistryKit.csproj" Id="1c0c467a-9941-4e34-8551-1025b6145895" />
   <Project Path="RegistryKitTests/RegistryKitTests.csproj" Id="29f53f32-5f13-474e-8401-a076a36581da" />
   <Project Path="ReluctersteSDK/ReluctersteSDK.csproj" />
-  <Project Path="RowMod/RowMod.csproj" Id="5bf0d1a2-3006-4ccf-8598-13a83843d98a" />
   <Project Path="TestProject/TestProject.csproj" Id="3f5f6b4b-8d50-4feb-a8e5-f52b8e8f2684" />
 </Solution>

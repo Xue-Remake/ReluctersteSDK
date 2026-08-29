@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.10" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ReluctersteSDK\ReluctersteSDK.csproj" />
     <ProjectReference Include="..\RowMod\RowMod.csproj" />
   </ItemGroup>
