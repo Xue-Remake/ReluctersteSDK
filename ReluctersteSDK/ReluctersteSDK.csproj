@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Authors>XueRemake</Authors>
-		<Version>0.8.4.0</Version>
+		<Version>0.8.5.0</Version>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<Company>Relucterste Digital Studio</Company>
@@ -28,6 +28,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.11" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
 		<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5.1" />
 	</ItemGroup>
 
