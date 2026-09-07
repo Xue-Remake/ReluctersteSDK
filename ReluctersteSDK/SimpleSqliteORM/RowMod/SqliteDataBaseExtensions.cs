@@ -7,6 +7,15 @@ namespace ReluctersteSDK.SimpleSqliteORM.RowMod
     /// </summary>
     internal static class SqliteDataBaseExtensions
     {
+        /// <summary>
+        /// 异步执行查询 SQL 语句并将结果集映射为对象列表。
+        /// </summary>
+        /// <typeparam name="T">映射目标类型。</typeparam>
+        /// <param name="db">数据库实例。</param>
+        /// <param name="sql">要执行的 SQL 查询语句。</param>
+        /// <param name="parameters">SQL 参数列表，可为 <c>null</c>。</param>
+        /// <param name="map">将每行数据读取器映射为对象的委托函数。</param>
+        /// <returns>包含映射结果的对象列表。</returns>
         public static async Task<List<T>> ExecuteQueryAsync<T>(
             this SqliteDataBase db,
             string sql,
@@ -46,6 +55,13 @@ namespace ReluctersteSDK.SimpleSqliteORM.RowMod
             return list;
         }
 
+        /// <summary>
+        /// 异步执行查询 SQL 语句并返回第一行第一列的标量值。
+        /// </summary>
+        /// <param name="db">数据库实例。</param>
+        /// <param name="sql">要执行的 SQL 查询语句。</param>
+        /// <param name="parameters">SQL 参数列表，可为 <c>null</c>。</param>
+        /// <returns>查询结果的第一行第一列值；若结果集为空则返回 <c>null</c>。</returns>
         public static async Task<object?> ExecuteScalarAsync(
             this SqliteDataBase db,
             string sql,
@@ -76,7 +92,13 @@ namespace ReluctersteSDK.SimpleSqliteORM.RowMod
 
             return await cmd.ExecuteScalarAsync();
         }
-
+        /// <summary>
+        /// 异步执行非查询 SQL 语句（如 INSERT、UPDATE、DELETE、DDL 等）。
+        /// </summary>
+        /// <param name="db">数据库实例。</param>
+        /// <param name="sql">要执行的 SQL 语句。</param>
+        /// <param name="parameters">参数字典，可为 <c>null</c>。</param>
+        /// <returns>受影响的行数。</returns>
         public static async Task<int> ExecuteNonQueryAsync(
             this SqliteDataBase db,
             string sql,
@@ -104,7 +126,11 @@ namespace ReluctersteSDK.SimpleSqliteORM.RowMod
 
             return await cmd.ExecuteNonQueryAsync();
         }
-
+        /// <summary>
+        /// 在独立的事务中异步执行一组数据库操作。
+        /// </summary>
+        /// <param name="db">数据库实例。</param>
+        /// <param name="action">包含连接与事务参数的执行委托，发生异常时会自动回滚。</param>
         public static async Task ExecuteInTransactionAsync(
             this SqliteDataBase db,
             Func<SqliteConnection, SqliteTransaction, Task> action)

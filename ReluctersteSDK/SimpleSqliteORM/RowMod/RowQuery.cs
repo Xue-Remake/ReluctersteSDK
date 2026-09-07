@@ -4,6 +4,9 @@ using System.Text;
 
 namespace ReluctersteSDK.SimpleSqliteORM.RowMod
 {
+    /// <summary>
+    /// 表示针对纯行模式（<see cref="Row"/>）的 SQL 查询构建与执行器。
+    /// </summary>
     public class RowQuery
     {
         private readonly SqliteDataBase _db;
@@ -17,19 +20,31 @@ namespace ReluctersteSDK.SimpleSqliteORM.RowMod
 
         private int? _limit;
         private int? _offset;
-
+        /// <summary>
+        /// 初始化 <see cref="RowQuery"/> 实例。
+        /// </summary>
+        /// <param name="db">底层 SQLite 数据库操作实例。</param>
+        /// <param name="tableName">要查询的表名。</param>
         public RowQuery(SqliteDataBase db, string tableName)
         {
             _db = db;
             _tableName = tableName;
         }
-
+        /// <summary>
+        /// 指定要检索的列。若不指定则默认检索全部列（*）。
+        /// </summary>
+        /// <param name="columns">列名数组。</param>
+        /// <returns>当前的查询构建器实例。</returns>
         public RowQuery Select(params string[] columns)
         {
             _selectColumns.AddRange(columns);
             return this;
         }
-
+        /// <summary>
+        /// 添加基于表达式树的 WHERE 过滤条件。
+        /// </summary>
+        /// <param name="predicate">过滤条件表达式（支持二元运算、Contains 等）。</param>
+        /// <returns>当前的查询构建器实例。</returns>
         public RowQuery Where(Expression<Func<Row, bool>> predicate)
         {
             var sql = ParseExpression(predicate.Body);
@@ -39,31 +54,50 @@ namespace ReluctersteSDK.SimpleSqliteORM.RowMod
             }
             return this;
         }
-
+        /// <summary>
+        /// 指定按某一列进行升序排序（ASC）。
+        /// </summary>
+        /// <param name="columnName">排序的列名。</param>
+        /// <returns>当前的查询构建器实例。</returns>
         public RowQuery OrderBy(string columnName)
         {
             _orderByClauses.Add($"{SqliteUtils.QuoteIdentifier(columnName)} ASC");
             return this;
         }
-
+        /// <summary>
+        /// 指定按某一列进行降序排序（DESC）。
+        /// </summary>
+        /// <param name="columnName">排序的列名。</param>
+        /// <returns>当前的查询构建器实例。</returns>
         public RowQuery OrderByDescending(string columnName)
         {
             _orderByClauses.Add($"{SqliteUtils.QuoteIdentifier(columnName)} DESC");
             return this;
         }
-
+        /// <summary>
+        /// 跳过指定数量的记录（OFFSET）。
+        /// </summary>
+        /// <param name="count">跳过的行数。</param>
+        /// <returns>当前的查询构建器实例。</returns>
         public RowQuery Skip(int count)
         {
             _offset = count;
             return this;
         }
-
+        /// <summary>
+        /// 限制返回的记录数量（LIMIT）。
+        /// </summary>
+        /// <param name="count">最大获取的行数。</param>
+        /// <returns>当前的查询构建器实例。</returns>
         public RowQuery Take(int count)
         {
             _limit = count;
             return this;
         }
-
+        /// <summary>
+        /// 异步执行查询并返回匹配的行列表。
+        /// </summary>
+        /// <returns>包含结果行的列表。</returns>
         public async Task<List<Row>> ToListAsync()
         {
             var (sql, parameters) = BuildSelectSql();
@@ -79,14 +113,20 @@ namespace ReluctersteSDK.SimpleSqliteORM.RowMod
                 return row;
             });
         }
-
+        /// <summary>
+        /// 异步执行查询并返回第一条匹配的记录；若无匹配项则返回 <c>null</c>。
+        /// </summary>
+        /// <returns>第一行数据或 <c>null</c>。</returns>
         public async Task<Row?> FirstOrDefaultAsync()
         {
             _limit = 1;
             var list = await ToListAsync();
             return list.FirstOrDefault();
         }
-
+        /// <summary>
+        /// 异步获取符合当前过滤条件的记录总数。
+        /// </summary>
+        /// <returns>记录总行数。</returns>
         public async Task<long> CountAsync()
         {
             var sb = new StringBuilder();
@@ -100,7 +140,10 @@ namespace ReluctersteSDK.SimpleSqliteORM.RowMod
             var result = await _db.ExecuteScalarAsync(sb.ToString(), _parameters);
             return Convert.ToInt64(result);
         }
-
+        /// <summary>
+        /// 异步删除符合当前过滤条件的全部记录。
+        /// </summary>
+        /// <returns>受影响的行数。</returns>
         public async Task<int> DeleteAsync()
         {
             var sb = new StringBuilder();
@@ -114,7 +157,11 @@ namespace ReluctersteSDK.SimpleSqliteORM.RowMod
             var dict = _parameters.ToDictionary(p => p.ParameterName, p => (object?)p.Value);
             return await _db.ExecuteNonQueryAsync(sb.ToString(), dict);
         }
-
+        /// <summary>
+        /// 异步更新符合当前过滤条件的所有记录。
+        /// </summary>
+        /// <param name="updateData">包含待更新列及其新值的行数据。</param>
+        /// <returns>受影响的行数。</returns>
         public async Task<int> UpdateAsync(Row updateData)
         {
             if (updateData == null || updateData.Count == 0) return 0;
