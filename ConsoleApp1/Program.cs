@@ -1,7 +1,7 @@
 using ReluctersteSDK.PathHelper;
 using ReluctersteSDK.PathHelper.Tools;
 using ReluctersteSDK.SimpleSqliteORM;
-using RowMod;
+using ReluctersteSDK.SimpleSqliteORM.RowMod;
 
 namespace ConsoleApp1
 {

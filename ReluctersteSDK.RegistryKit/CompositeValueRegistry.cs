@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ReluctersteSDK.RegistryKit
 {
@@ -12,6 +9,11 @@ namespace ReluctersteSDK.RegistryKit
     {
         private readonly object?[] _keys;
         private readonly int _hashCode;
+        /// <summary>
+        /// 初始化 <see cref="CompositeKey"/> 结构的新实例。
+        /// </summary>
+        /// <param name="keys">组成复合键的各列元素数组</param>
+        /// <exception cref="ArgumentNullException">当 <paramref name="keys"/> 为 null 时抛出</exception>
         public CompositeKey(params object?[] keys)
         {
             _keys = keys ?? throw new ArgumentNullException(nameof(keys));
@@ -23,9 +25,18 @@ namespace ReluctersteSDK.RegistryKit
             }
             _hashCode = hash.ToHashCode();
         }
+        /// <summary>获取复合键包含的列数</summary>
         public int Length => _keys.Length;
+        /// <summary>获取指定索引处的键列对象</summary>
+        /// <param name="index">从 0 开始的列索引</param>
         public object? this[int index] => _keys[index];
+        /// <summary>获取复合键内部所有列对象的只读列表视图</summary>
         public IReadOnlyList<object?> Keys => _keys;
+        /// <summary>
+        /// 确定当前复合键是否与另一个复合键相等（按列依次判定值相等）
+        /// </summary>
+        /// <param name="other">要比较的复合键</param>
+        /// <returns>若两者的长度与每列的值均相等则返回 true，否则返回 false</returns>
         public bool Equals(CompositeKey other)
         {
             if (_keys.Length != other._keys.Length) return false;
@@ -35,13 +46,22 @@ namespace ReluctersteSDK.RegistryKit
             }
             return true;
         }
+        /// <summary>确定当前对象是否与指定对象相等</summary>
         public override bool Equals(object? obj) => obj is CompositeKey other && Equals(other);
+        /// <summary>返回该复合键的哈希代码</summary>
         public override int GetHashCode() => _hashCode;
+        /// <summary>返回复合键格式化的字符串表示，形式如 "[k1, k2, ...]"</summary>
         public override string ToString() => $"[{string.Join(", ", _keys)}]";
+
         // 隐式转换：支持数组与 C# 元组直接无缝转为 CompositeKey
+        /// <summary>将对象数组隐式转换为 <see cref="CompositeKey"/></summary>
         public static implicit operator CompositeKey(object?[] keys) => new(keys);
+        /// <summary>将 2 元元组隐式转换为 <see cref="CompositeKey"/></summary>
         public static implicit operator CompositeKey((object?, object?) t) => new(t.Item1, t.Item2);
+        /// <summary>将 3 元元组隐式转换为 <see cref="CompositeKey"/></summary>
         public static implicit operator CompositeKey((object?, object?, object?) t) => new(t.Item1, t.Item2, t.Item3);
+
+        /// <summary>将 4 元元组隐式转换为 <see cref="CompositeKey"/></summary>
         public static implicit operator CompositeKey((object?, object?, object?, object?) t) => new(t.Item1, t.Item2, t.Item3, t.Item4);
         /// <summary>快捷创建 CompositeKey</summary>
         public static CompositeKey From(params object?[] keys) => new(keys);
@@ -64,6 +84,9 @@ namespace ReluctersteSDK.RegistryKit
             public Entry WithEnabled(bool enabled) => new(Value, enabled);
         }
         private readonly ConcurrentDictionary<CompositeKey, Entry> _store;
+        /// <summary>
+        /// 初始化 <see cref="CompositeValueRegistry{TValue}"/> 的新实例。
+        /// </summary>
         public CompositeValueRegistry()
         {
             _store = new ConcurrentDictionary<CompositeKey, Entry>();
@@ -100,12 +123,28 @@ namespace ReluctersteSDK.RegistryKit
             => Register(new CompositeKey(k1, k2, k3, k4), value);
         #endregion
         #region 启用/禁用 Enable / Disable
+        /// <summary>启用指定复合键的条目</summary>
+        /// <param name="key">目标复合键</param>
+        /// <returns>若成功更新或条目已处于启用状态则返回 true，若条目不存在则返回 false</returns>
         public bool Enable(CompositeKey key) => SetEnabled(key, true);
+
+        /// <summary>启用指定双列复合键的条目</summary>
         public bool Enable<T1, T2>(T1 k1, T2 k2) => SetEnabled(new CompositeKey(k1, k2), true);
+
+        /// <summary>启用指定三列复合键的条目</summary>
         public bool Enable<T1, T2, T3>(T1 k1, T2 k2, T3 k3) => SetEnabled(new CompositeKey(k1, k2, k3), true);
+
+        /// <summary>禁用指定复合键的条目</summary>
+        /// <param name="key">目标复合键</param>
+        /// <returns>若成功更新或条目已处于禁用状态则返回 true，若条目不存在则返回 false</returns>
         public bool Disable(CompositeKey key) => SetEnabled(key, false);
+
+        /// <summary>禁用指定双列复合键的条目</summary>
         public bool Disable<T1, T2>(T1 k1, T2 k2) => SetEnabled(new CompositeKey(k1, k2), false);
+
+        /// <summary>禁用指定三列复合键的条目</summary>
         public bool Disable<T1, T2, T3>(T1 k1, T2 k2, T3 k3) => SetEnabled(new CompositeKey(k1, k2, k3), false);
+
         private bool SetEnabled(CompositeKey key, bool enabled)
         {
             while (_store.TryGetValue(key, out var entry))
@@ -230,28 +269,42 @@ namespace ReluctersteSDK.RegistryKit
         }
         #endregion
         #region 集合与状态检查 Collection & Utility
+        /// <summary>获取所有已启用的复合键集合</summary>
         public ICollection<CompositeKey> Keys()
         {
             return _store.Where(kvp => kvp.Value.Enabled)
                          .Select(kvp => kvp.Key)
                          .ToList();
         }
+        /// <summary>获取所有已启用的值集合</summary>
         public ICollection<TValue> Values()
         {
             return _store.Where(kvp => kvp.Value.Enabled)
                          .Select(kvp => kvp.Value.Value)
                          .ToList();
         }
+        /// <summary>移除指定复合键（无论状态）</summary>
+        /// <param name="key">目标复合键</param>
+        /// <returns>若成功移除则返回 true，若键不存在则返回 false</returns>
         public bool Remove(CompositeKey key) => _store.TryRemove(key, out _);
+        /// <summary>移除指定双列复合键（无论状态）</summary>
         public bool Remove<T1, T2>(T1 k1, T2 k2) => Remove(new CompositeKey(k1, k2));
+        /// <summary>移除指定三列复合键（无论状态）</summary>
         public bool Remove<T1, T2, T3>(T1 k1, T2 k2, T3 k3) => Remove(new CompositeKey(k1, k2, k3));
+        /// <summary>清空所有注册项</summary>
         public void Clear() => _store.Clear();
+        /// <summary>检查指定复合键是否物理存在（无视启用状态）</summary>
+        /// <param name="key">目标复合键</param>
         public bool Exists(CompositeKey key) => _store.ContainsKey(key);
+        /// <summary>检查指定双列复合键是否物理存在（无视启用状态）</summary>
         public bool Exists<T1, T2>(T1 k1, T2 k2) => Exists(new CompositeKey(k1, k2));
+        /// <summary>检查指定复合键是否已启用</summary>
+        /// <param name="key">目标复合键</param>
         public bool IsEnabled(CompositeKey key)
         {
             return _store.TryGetValue(key, out var entry) && entry.Enabled;
         }
+        /// <summary>检查指定双列复合键是否已启用</summary>
         public bool IsEnabled<T1, T2>(T1 k1, T2 k2) => IsEnabled(new CompositeKey(k1, k2));
         #endregion
     }

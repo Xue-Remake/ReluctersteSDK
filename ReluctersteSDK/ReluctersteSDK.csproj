@@ -5,14 +5,14 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Authors>Xue-Remake</Authors>
-		<Version>0.8.5.3</Version>
+		<Version>0.8.5.4</Version>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<Company>Relucterste Digital Studio</Company>
 		<Copyright>Copyright © 2026 Xue-Remake &lt;xuemincanremake@gmail.com&gt;. All rights reserved.</Copyright>
 		<Description>一个简单的开发工具，目前有CommandHelper，CoordinatesPackage，LlmHelper，QuickRandom等小型工具；以及一个的自制ORM：SimpleSqliteORM</Description>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -29,9 +29,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.11" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
 		<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\ReluctersteSDK.Console\ReluctersteSDK.ConsoleHelper.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.DataStructures\ReluctersteSDK.DataStructures.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.EventSystem\ReluctersteSDK.EventSystem.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.LlmHelper\ReluctersteSDK.LlmHelper.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.MathTool\ReluctersteSDK.MathTool.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.PathHelper\ReluctersteSDK.PathHelper.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.RegistryKit\ReluctersteSDK.RegistryKit.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.SimpleSqliteORM\ReluctersteSDK.SimpleSqliteORM.csproj" />
 	</ItemGroup>
 
 </Project>

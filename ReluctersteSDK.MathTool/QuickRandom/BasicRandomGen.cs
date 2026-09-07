@@ -1,5 +1,8 @@
 namespace ReluctersteSDK.MathTool.QuickRandom
 {
+    /// <summary>
+    /// 基础随机数生成工具，用于生成单条随机数据
+    /// </summary>
     public static class BasicRandomGen
     {
 #pragma warning disable CS8602 // 抑制警告：解引用可能出现空引用
@@ -93,7 +96,7 @@ namespace ReluctersteSDK.MathTool.QuickRandom
         /// <summary>
         /// 从列表中等概率随机选择一项（方法1）。
         /// </summary>
-        /// <typeparam name="T">实现了 <see cref="CanbeRandom"/> 的类型</typeparam>
+        /// <typeparam name="T">实现了 <see cref="ICanbeRandom"/> 的类型</typeparam>
         /// <param name="list">待选择的列表</param>
         /// <returns>随机选中的项</returns>
         public static T RandomSelectOne<T>(List<T> list) where T : ICanbeRandom
@@ -107,7 +110,7 @@ namespace ReluctersteSDK.MathTool.QuickRandom
         /// 从列表中随机选择一项，以概率 p 选中类型为 TItem 的项（方法2）。
         /// 若列表中不存在 TItem 类型的项，则退化到方法1（全随机等概率）。
         /// </summary>
-        /// <typeparam name="TItem">目标类型，实现了 <see cref="CanbeRandom"/></typeparam>
+        /// <typeparam name="TItem">目标类型，实现了 <see cref="ICanbeRandom"/></typeparam>
         /// <param name="list">待选择的列表</param>
         /// <param name="p">选中 TItem 类型项的概率，范围 [0, 1]</param>
         /// <returns>随机选中的项</returns>

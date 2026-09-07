@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
-
 namespace RegistryKit.Tests
 {
     #region 测试用辅助类与接口

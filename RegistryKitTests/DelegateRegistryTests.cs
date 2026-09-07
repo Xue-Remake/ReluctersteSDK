@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Xunit;
-
 namespace RegistryKit.Tests
 {
     // 定义自定义委托，用于测试 DelegateRegistry 对非 Action/Func 自定义委托的防御性 DynamicInvoke 支持
