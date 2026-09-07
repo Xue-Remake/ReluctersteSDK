@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace ReluctersteSDK.DataStructure
+namespace ReluctersteSDK.DataStructures.Structures
 {
     /// <summary>
     /// 双向字典

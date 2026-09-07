@@ -3,6 +3,6 @@
   <Project Path="ConsoleApp1/ConsoleApp1.csproj" Id="c11cd25c-1830-4a37-94f9-cafddf175c97" />
   <Project Path="RegistryKit/RegistryKit.csproj" Id="1c0c467a-9941-4e34-8551-1025b6145895" />
   <Project Path="RegistryKitTests/RegistryKitTests.csproj" Id="29f53f32-5f13-474e-8401-a076a36581da" />
+  <Project Path="ReluctersteSDK.DataStructures/ReluctersteSDK.DataStructures.csproj" Id="cd120bc9-fede-495c-a89b-f1f3bc1cdad4" />
   <Project Path="ReluctersteSDK/ReluctersteSDK.csproj" />
-  <Project Path="TestProject/TestProject.csproj" Id="3f5f6b4b-8d50-4feb-a8e5-f52b8e8f2684" />
 </Solution>

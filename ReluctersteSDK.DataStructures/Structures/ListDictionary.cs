@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace ReluctersteSDK.DataStructure
+namespace ReluctersteSDK.DataStructures.Structures
 {
     /// <summary>
     /// 表示一个基于 <see cref="List{T}"/> 的、线程安全的键值对集合。
