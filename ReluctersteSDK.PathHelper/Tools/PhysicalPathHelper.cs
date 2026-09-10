@@ -13,8 +13,7 @@ namespace ReluctersteSDK.PathHelper.Tools
         public static bool FileExists(string filePath)
         {
             AbsolutePath? absPath = PathAnalyzer.Analysis(filePath);
-            if (absPath == null) return false;
-            return File.Exists(absPath.PathStr);
+            return absPath != null && File.Exists(absPath.PathStr);
         }
         /// <summary>
         /// 检测指定的文件路径是否存在该文件
@@ -24,8 +23,7 @@ namespace ReluctersteSDK.PathHelper.Tools
         public static bool FileExists(FdPath filePath)
         {
             AbsolutePath? absPath = PathAnalyzer.Analysis(filePath);
-            if (absPath == null) return false;
-            return File.Exists(absPath.PathStr);
+            return absPath != null && File.Exists(absPath.PathStr);
         }
         /// <summary>
         /// 检测指定的文件夹路径下是否存在文件
@@ -37,8 +35,7 @@ namespace ReluctersteSDK.PathHelper.Tools
         public static bool DirectoryContainsFiles(string folderPath, bool checkSubDirectories = false)
         {
             AbsolutePath? absPath = PathAnalyzer.Analysis(folderPath);
-            if (absPath == null) return false;
-            return InternalDirectoryContainsFiles(absPath.PathStr, checkSubDirectories);
+            return absPath != null && InternalDirectoryContainsFiles(absPath.PathStr, checkSubDirectories);
         }
         /// <summary>
         /// 检测指定的文件夹路径下是否存在文件
@@ -50,26 +47,21 @@ namespace ReluctersteSDK.PathHelper.Tools
         public static bool DirectoryContainsFiles(FdPath folderPath, bool checkSubDirectories = false)
         {
             AbsolutePath? absPath = PathAnalyzer.Analysis(folderPath);
-            if (absPath == null) return false;
-            return InternalDirectoryContainsFiles(absPath.PathStr, checkSubDirectories);
+            return absPath != null && InternalDirectoryContainsFiles(absPath.PathStr, checkSubDirectories);
         }
         /// <summary>
         /// 内部执行：文件夹内部是否有文件的核心判断
         /// </summary>
         private static bool InternalDirectoryContainsFiles(string absolutePathStr, bool checkSubDirectories)
         {
-            // 如果文件夹本身不存在，直接返回 false
             if (!Directory.Exists(absolutePathStr)) return false;
             try
             {
                 SearchOption option = checkSubDirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-                // EnumerateFiles 返回的是按需获取的迭代器。
-                // 结合 Any()，它在找到第一个文件时就会立即停止（并返回true），所以在大文件夹中性能极高。
                 return Directory.EnumerateFiles(absolutePathStr, "*", option).Any();
             }
             catch
             {
-                // 捕捉诸如 权限不足(UnauthorizedAccessException) 等底层异常
                 return false;
             }
         }

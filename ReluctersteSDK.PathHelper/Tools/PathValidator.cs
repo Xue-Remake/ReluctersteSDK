@@ -2,6 +2,9 @@ using System.Runtime.InteropServices;
 
 namespace ReluctersteSDK.PathHelper.Tools
 {
+    /// <summary>
+    /// 路径验证器，提供验证路径合法性，以及路径是否存在的静态方法
+    /// </summary>
     public static class PathValidator
     {
         // Windows 系统保留的设备名称（不允许作为文件夹或文件名，如 CON.txt 或 NUL）

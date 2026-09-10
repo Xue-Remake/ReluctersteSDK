@@ -15,28 +15,18 @@ namespace ReluctersteSDK.PathHelper.Tools
         {
             string? result = PathValidator.FormatPath(str);
             if (result == null) return null;
-            else
-            {
-                return new AbsolutePath(PathValidator.ToAbsolutePath(result));
-            }
+            return new AbsolutePath(PathValidator.ToAbsolutePath(result));
         }
         /// <summary>
         /// 将已有的相对路径对象转换为绝对路径对象。
         /// <para>以程序运行目录（AppContext.BaseDirectory）为基准计算绝对路径。</para>
         /// </summary>
-        /// <param name="rpath">相对路径对象</param>
+        /// <param name="path">相对路径对象</param>
         /// <returns>转换后的绝对路径对象 <see cref="AbsolutePath"/></returns>
         public static AbsolutePath? Analysis(FdPath path)
         {
-            if (PathValidator.IsValidAbsolutePath(path.PathStr))
-            {
-                if (path is AbsolutePath) return (AbsolutePath)path;
-                else return new AbsolutePath(path.PathStr);
-            }
-            else
-            {
-                return new AbsolutePath(PathValidator.ToAbsolutePath(path.PathStr));
-            }
+            if (path is AbsolutePath abs) return abs;
+            return new AbsolutePath(PathValidator.ToAbsolutePath(path.PathStr));
         }
 
         /// <summary>
@@ -46,42 +36,32 @@ namespace ReluctersteSDK.PathHelper.Tools
         /// <returns>相对路径对象；如果格式非法或无法建立相对关系（如跨盘符），则返回 null</returns>
         public static RelativePath? ToRelative(string str)
         {
-            if (string.IsNullOrWhiteSpace(str))
-                return null;
-            // 1. 验证并格式化输入的路径
+            if (string.IsNullOrWhiteSpace(str)) return null;
+
             string? formatted = PathValidator.FormatPath(str);
-            if (formatted == null)
-                return null;
-            // 2. 统一转换为绝对路径（这样可以兼容输入本身就是相对路径、或是未简化的绝对路径的情况）
+            if (formatted == null) return null;
+
             string absPath = PathValidator.ToAbsolutePath(formatted);
-            // 3. 计算相对于程序集运行目录的相对路径
             string baseDir = AppContext.BaseDirectory;
             string relative = Path.GetRelativePath(baseDir, absPath);
-            // 4. 检查转换结果是否真的是相对路径
-            // 如果两个路径跨盘符（例如 C:\ 到 D:\），Path.GetRelativePath 会直接返回原绝对路径。
-            // 此时通过检查其是否有 Root（根部）来判断是否成功转换为了相对路径。
+
             string root = Path.GetPathRoot(relative) ?? string.Empty;
             if (!string.IsNullOrEmpty(root))
             {
-                return null; // 无法建立相对关系，返回 null
+                return null; // 跨盘符无法建立相对关系
             }
-            // 5. 对生成的相对路径运行一次 FormatPath，确保其符合 PathValidator 的规范（如自动补全 ".\" 前缀）
-            string? formattedRel = PathValidator.FormatPath(relative);
-            if (formattedRel == null)
-                return null;
-            return new RelativePath(formattedRel);
+
+            return new RelativePath(relative);
         }
         /// <summary>
         /// 将绝对路径对象转换为相对于程序运行目录的相对路径
         /// </summary>
-        /// <param name="apath">绝对路径对象</param>
+        /// <param name="path">绝对路径对象</param>
         /// <returns>相对路径对象；如果无法建立相对关系则返回 null</returns>
-        public static RelativePath? ToRelative(AbsolutePath apath)
+        public static RelativePath? ToRelative(AbsolutePath path)
         {
-            if (apath == null)
-                return null;
-            // 直接复用 ToRelative(string) 的高可靠性逻辑
-            return ToRelative(apath.PathStr);
+            if (path == null) return null;
+            return ToRelative(path.PathStr);
         }
     }
 }
