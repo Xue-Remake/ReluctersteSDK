@@ -16,6 +16,9 @@ namespace ReluctersteSDK.EventSystem.Interfaces
         /// <summary>基于委托的即时订阅</summary>
         void Subscribe<TEvent>(Func<TEvent, CancellationToken, Task> handler)
             where TEvent : IEvent;
+        /// <summary>取消基于委托的即时订阅</summary>
+        void Unsubscribe<TEvent>(Func<TEvent, CancellationToken, Task> handler)
+            where TEvent : IEvent;
         /// <summary>发布事件</summary>
         Task PublishAsync<TEvent>(TEvent @event, CancellationToken cancellationToken = default)
             where TEvent : IEvent;

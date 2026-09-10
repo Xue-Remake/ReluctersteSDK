@@ -263,11 +263,16 @@ namespace ReluctersteSDK.MathTool.Vectors
         /// <summary>返回表示当前向量的字符串格式。</summary>
         public override string ToString() => $"({X:0.###}, {Y:0.###})";
 
-
+        /// <summary>
+        /// 隐式转换方法：CartesianVector2D到Vector2
+        /// </summary>
         public static implicit operator Vector2(CartesianVector2D cartesianVector2D)
         {
             return new Vector2(cartesianVector2D.X, cartesianVector2D.Y);
         }
+        /// <summary>
+        /// 隐式转换方法：Vector2到CartesianVector2D
+        /// </summary>
         public static implicit operator CartesianVector2D(Vector2 vector2)
         {
             return new CartesianVector2D(vector2.X, vector2.Y);

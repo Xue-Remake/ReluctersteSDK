@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<Version>0.8.6.1</Version>
+	<Authors>Xue-Remake</Authors>
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<Copyright>Copyright © 2026 Xue-Remake &lt;xuemincanremake@gmail.com&gt;. All rights reserved.</Copyright>
+	<Description>面向.NET的2D场景框架，提供基于树形节点的层级组织、2D变换与更新/渲染</Description>
+	<PackageOutputPath>E:\Work\资产仓库\NuGetPackage</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ReluctersteSDK.DataStructures\ReluctersteSDK.DataStructures.csproj" />
+    <ProjectReference Include="..\ReluctersteSDK.MathTool\ReluctersteSDK.MathTool.csproj" />
+  </ItemGroup>
+
+</Project>

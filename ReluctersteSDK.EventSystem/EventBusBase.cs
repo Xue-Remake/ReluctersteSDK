@@ -10,18 +10,24 @@ namespace ReluctersteSDK.EventSystem
     public class EventBusBase : IEventBus
     {
         /// <summary>
-        /// 维护事件类型到处理器类型集合的映射映射字典（基于类型的订阅）
+        /// 内部模型：记录基于委托的订阅元数据（原始委托用于比较，Invoker 用于分发）
+        /// </summary>
+        protected sealed record DynamicSubscription(
+            Delegate OriginalHandler,
+            Func<object, CancellationToken, Task> Invoker
+        );
+        /// <summary>
+        /// 维护事件类型到处理器类型集合的映射字典（基于类型的订阅）
         /// </summary>
         protected readonly ConcurrentDictionary<Type, HashSet<Type>> TypeHandlers = new();
         /// <summary>
-        /// 维护事件类型到委托处理器列表的映射字典（基于委托的订阅）
+        /// 维护事件类型到委托处理器包装列表的映射字典（基于委托的订阅）
         /// </summary>
-        protected readonly ConcurrentDictionary<Type, List<Func<object, CancellationToken, Task>>> DynamicHandlers = new();
+        protected readonly ConcurrentDictionary<Type, List<DynamicSubscription>> DynamicHandlers = new();
         /// <summary>
         /// 依赖注入服务提供程序，用于解析 Scoped 或 Transient 生命周期的处理器实例
         /// </summary>
         protected readonly IServiceProvider? ServiceProvider;
-
         /// <summary>
         /// 初始化 <see cref="EventBusBase"/> 类的新实例
         /// </summary>
@@ -30,7 +36,6 @@ namespace ReluctersteSDK.EventSystem
         {
             ServiceProvider = serviceProvider;
         }
-
         #region 订阅管理
         /// <summary>
         /// 注册基于类型的事件处理器
@@ -76,19 +81,38 @@ namespace ReluctersteSDK.EventSystem
         /// <param name="handler">事件触发时执行的异步委托</param>
         public virtual void Subscribe<TEvent>(Func<TEvent, CancellationToken, Task> handler) where TEvent : IEvent
         {
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
             var eventType = typeof(TEvent);
             Task Wrapper(object @event, CancellationToken ct) => handler((TEvent)@event, ct);
+            var subscription = new DynamicSubscription(handler, Wrapper);
             DynamicHandlers.AddOrUpdate(eventType,
-                _ => new List<Func<object, CancellationToken, Task>> { Wrapper },
+                _ => new List<DynamicSubscription> { subscription },
                 (_, list) =>
                 {
                     lock (list)
-                        list.Add(Wrapper);
+                        list.Add(subscription);
                     return list;
                 });
         }
+        /// <summary>
+        /// 注销基于委托回调的事件处理器
+        /// </summary>
+        /// <typeparam name="TEvent">目标事件类型</typeparam>
+        /// <param name="handler">需要注销的目标委托</param>
+        public virtual void Unsubscribe<TEvent>(Func<TEvent, CancellationToken, Task> handler) where TEvent : IEvent
+        {
+            if (handler == null) return;
+            var eventType = typeof(TEvent);
+            if (DynamicHandlers.TryGetValue(eventType, out var list))
+            {
+                lock (list)
+                {
+                    // 委托可以通过 Equals 进行精准比较（包括方法指针及 Target 实例）
+                    list.RemoveAll(sub => sub.OriginalHandler.Equals(handler));
+                }
+            }
+        }
         #endregion
-
         #region 事件发布与分发
         /// <summary>
         /// 异步发布事件，并发广播通知所有匹配的订阅者（包括动态委托与类型处理器）
@@ -107,14 +131,14 @@ namespace ReluctersteSDK.EventSystem
             // 1. 触发基于委托的处理器
             if (DynamicHandlers.TryGetValue(eventType, out var dynamicList))
             {
-                List<Func<object, CancellationToken, Task>> copy;
+                List<DynamicSubscription> copy;
                 lock (dynamicList)
                 {
                     copy = dynamicList.ToList();
                 }
-                foreach (var handler in copy)
+                foreach (var sub in copy)
                 {
-                    tasks.Add(ExecuteHandlerSafelyAsync(() => handler(@event, cancellationToken), eventType));
+                    tasks.Add(ExecuteHandlerSafelyAsync(() => sub.Invoker(@event, cancellationToken), eventType));
                 }
             }
             // 2. 触发基于类型的处理器（通过 DI 容器解析）
@@ -148,9 +172,6 @@ namespace ReluctersteSDK.EventSystem
         /// <summary>
         /// 安全执行单个处理器，捕获并转交异常，防止单个订阅者崩溃影响其他订阅者的分发
         /// </summary>
-        /// <param name="action">待执行的处理器调用操作</param>
-        /// <param name="eventType">当前正在分发的事件类型</param>
-        /// <returns>异步执行的 Task</returns>
         protected virtual async Task ExecuteHandlerSafelyAsync(Func<Task> action, Type eventType)
         {
             try
@@ -165,15 +186,8 @@ namespace ReluctersteSDK.EventSystem
         /// <summary>
         /// 当某个事件处理器在执行过程中抛出异常时的回调处理方法
         /// </summary>
-        /// <param name="eventType">抛出异常的目标事件类型</param>
-        /// <param name="ex">捕获到的异常实例</param>
-        /// <returns>异步处理任务</returns>
-        /// <remarks>
-        /// 默认实现仅向控制台输出错误，派生类可重写此方法接入更完善的日志记录组件（如 <c>ILogger</c>）或告警系统。
-        /// </remarks>
         protected virtual Task OnHandlerExceptionAsync(Type eventType, Exception ex)
         {
-            // 默认控制台打印，子类可集成 ILogger
             Console.WriteLine($"[EventBus Error] Exception handling event {eventType.Name}: {ex.Message}");
             return Task.CompletedTask;
         }

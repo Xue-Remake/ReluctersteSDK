@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Authors>Xue-Remake</Authors>
-		<Version>0.8.5.4</Version>
+		<Version>0.8.6.1</Version>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<Company>Relucterste Digital Studio</Company>
 		<Copyright>Copyright © 2026 Xue-Remake &lt;xuemincanremake@gmail.com&gt;. All rights reserved.</Copyright>
@@ -13,6 +13,7 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageOutputPath>E:\Work\资产仓库\NuGetPackage</PackageOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -4,13 +4,14 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>0.8.5.4</Version>
+	<Version>0.8.6.1</Version>
 	<Authors>Xue-Remake</Authors>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<Copyright>Copyright © 2026 Xue-Remake &lt;xuemincanremake@gmail.com&gt;. All rights reserved.</Copyright>
+	<PackageOutputPath>E:\Work\资产仓库\NuGetPackage</PackageOutputPath>
   </PropertyGroup>
 
 </Project>
