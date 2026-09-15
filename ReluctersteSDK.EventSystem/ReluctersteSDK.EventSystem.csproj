@@ -4,13 +4,14 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>0.8.6.1</Version>
+	<Version>0.8.6.3</Version>
 	<Authors>Xue-Remake</Authors>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<Copyright>Copyright © 2026 Xue-Remake &lt;xuemincanremake@gmail.com&gt;. All rights reserved.</Copyright>
+	<Description>简易的事件系统，提供事件、处理器、以及事件总线的接口</Description>
 	<PackageOutputPath>E:\Work\资产仓库\NuGetPackage</PackageOutputPath>
   </PropertyGroup>
 

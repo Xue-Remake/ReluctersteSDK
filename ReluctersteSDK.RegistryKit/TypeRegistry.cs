@@ -6,7 +6,7 @@ namespace ReluctersteSDK.RegistryKit
     /// 类型注册表：抽象到具体类型的映射，支持对单个映射条目启用/禁用（线程安全）。
     /// 条目不可变，更新通过 ConcurrentDictionary 原子替换完成。
     /// </summary>
-    public class TypeRegistry
+    public class TypeRegistry : IRegistry
     {
         private sealed class MappingEntry
         {

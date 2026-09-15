@@ -7,7 +7,7 @@ namespace ReluctersteSDK.RegistryKit
     /// 条目采用不可变类设计：任何更新都会整体替换条目，通过 ConcurrentDictionary
     /// 的原子操作发布，读路径无需加锁，也不存在字段可见性问题。
     /// </summary>
-    public class InstanceRegistry
+    public class InstanceRegistry : IRegistry
     {
         private sealed class TypeEntry
         {

@@ -6,7 +6,7 @@ namespace ReluctersteSDK.RegistryKit
     /// 通用键值对注册表，支持对单个条目进行启用/禁用（线程安全）。
     /// 条目不可变，更新通过 ConcurrentDictionary 原子替换完成。
     /// </summary>
-    public class ValueRegistry<TKey, TValue>
+    public class ValueRegistry<TKey, TValue> : IRegistry
     {
         private sealed class Entry
         {

@@ -4,13 +4,14 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>0.8.6.1</Version>
+	<Version>0.8.6.3</Version>
 	<Authors>Xue-Remake</Authors>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 	<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	<Copyright>Copyright © 2026 Xue-Remake &lt;xuemincanremake@gmail.com&gt;. All rights reserved.</Copyright>
+	<Description>一个简易的类库，提供包括列表字典在内的一些数据结构</Description>
 	<PackageOutputPath>E:\Work\资产仓库\NuGetPackage</PackageOutputPath>
   </PropertyGroup>
 

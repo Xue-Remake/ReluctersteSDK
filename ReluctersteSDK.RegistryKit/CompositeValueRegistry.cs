@@ -5,7 +5,7 @@ namespace ReluctersteSDK.RegistryKit
     /// <summary>
     /// 复合键结构：支持任意数量、任意类型列组合构成的 Key
     /// </summary>
-    public readonly struct CompositeKey : IEquatable<CompositeKey>
+    public readonly struct CompositeKey : IEquatable<CompositeKey>, IRegistry
     {
         private readonly object?[] _keys;
         private readonly int _hashCode;

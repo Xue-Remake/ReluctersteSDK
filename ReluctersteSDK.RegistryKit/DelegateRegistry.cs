@@ -6,7 +6,7 @@ namespace ReluctersteSDK.RegistryKit
     /// 委托注册表：按名称存储委托，支持对单个委托条目启用/禁用（线程安全）。
     /// 条目不可变，更新通过 ConcurrentDictionary 原子替换完成。
     /// </summary>
-    public class DelegateRegistry
+    public class DelegateRegistry : IRegistry
     {
         private sealed class DelegateEntry
         {
