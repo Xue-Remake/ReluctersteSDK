@@ -1,10 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <PackageId>ReluctersteSDK.DataStructures</PackageId>
+    <AssemblyName>ReluctersteSDK.DataStructures</AssemblyName>
+    <RootNamespace>ReluctersteSDK.DataStructures</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>0.8.6.3</Version>
+	<Version>0.13.0.0</Version>
 	<Authors>Xue-Remake</Authors>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>

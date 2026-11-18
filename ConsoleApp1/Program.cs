@@ -1,7 +1,7 @@
-using ReluctersteSDK.PathHelper;
-using ReluctersteSDK.PathHelper.Tools;
-using ReluctersteSDK.SimpleSqliteORM;
-using ReluctersteSDK.SimpleSqliteORM.RowMod;
+using ReluctersteSDK.Paths;
+using ReluctersteSDK.Paths.Tools;
+using ReluctersteSDK.Sqlite;
+using ReluctersteSDK.Sqlite.RowMod;
 
 namespace ConsoleApp1
 {
@@ -9,7 +9,7 @@ namespace ConsoleApp1
     {
         static async Task Main(string[] args)
         {
-            // 1. 使用 PathHelper 确保路径安全
+            // 1. 使用 Paths 确保路径安全
             RelativePath relativeDataDir = new RelativePath(@"Data\Databases");
             AbsolutePath? dbFolder = PhysicalPathHelper.EnsureDirectoryExists(relativeDataDir);
 

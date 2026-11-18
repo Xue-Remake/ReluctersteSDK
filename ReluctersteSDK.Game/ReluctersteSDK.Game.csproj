@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<Version>0.13.0.0</Version>
+	<Authors>Xue-Remake</Authors>
+	<PackageId>ReluctersteSDK.Game</PackageId>
+	<AssemblyName>ReluctersteSDK.Game</AssemblyName>
+	<RootNamespace>ReluctersteSDK.Game</RootNamespace>
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<Copyright>Copyright © 2026 Xue-Remake &lt;xuemincanremake@gmail.com&gt;. All rights reserved.</Copyright>
+	<Description>面向 MonoGame 的 2D ECS 框架：实体/组件/系统、层级变换、查询与调度、单例、渲染与帧动画、摄像机裁剪、快照与调试统计。</Description>
+	<PackageOutputPath>E:\Work\资产仓库\NuGetPackage</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Math 已不再依赖 MonoGame，渲染层需要显式引用 -->
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ReluctersteSDK.Math\ReluctersteSDK.Math.csproj" />
+  </ItemGroup>
+
+</Project>

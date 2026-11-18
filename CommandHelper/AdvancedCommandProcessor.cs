@@ -1,10 +1,10 @@
-using ReluctersteSDK.RegistryKit;
+using ReluctersteSDK.Registry;
 using System.Reflection;
 
 namespace CommandHelper
 {
     /// <summary>
-    /// 高级命令处理器，基于 RegistryKit 构建。
+    /// 高级命令处理器，基于 Registry 构建。
     /// 支持线程安全、别名联动状态管理、依赖注入(DI)以及基于特性的自动注册。
     /// </summary>
     public class AdvancedCommandProcessor

@@ -1,4 +1,4 @@
-using ReluctersteSDK.RegistryKit;
+using ReluctersteSDK.Registry;
 
 namespace CommandHelper
 {

@@ -1,16 +1,24 @@
 <Solution>
   <Project Path="CommandHelper/CommandHelper.csproj" Id="03f07c53-01bf-4f87-a651-b732c3881d88" />
   <Project Path="ConsoleApp1/ConsoleApp1.csproj" Id="c11cd25c-1830-4a37-94f9-cafddf175c97" />
-  <Project Path="ReluctersteSDK.ConfigDriver/ReluctersteSDK.ConfigDriver.csproj" Id="b86e7ce4-8ddd-4712-95a7-b86178e34d64" />
-  <Project Path="ReluctersteSDK.Console/ReluctersteSDK.ConsoleHelper.csproj" Id="c3eb2721-bc31-44c6-97dc-c770628d5dd1" />
+  <Project Path="ReluctersteSDK.Config/ReluctersteSDK.Config.csproj" Id="b86e7ce4-8ddd-4712-95a7-b86178e34d64" />
+  <Project Path="ReluctersteSDK.Config.Test/ReluctersteSDK.Config.Test.csproj" />
+  <Project Path="ReluctersteSDK.Commands/ReluctersteSDK.Commands.csproj" Id="c3eb2721-bc31-44c6-97dc-c770628d5dd1" />
   <Project Path="ReluctersteSDK.DataStructures/ReluctersteSDK.DataStructures.csproj" Id="cd120bc9-fede-495c-a89b-f1f3bc1cdad4" />
+  <Project Path="ReluctersteSDK.DataStructures.Test/ReluctersteSDK.DataStructures.Test.csproj" Id="8a2f5b14-6c3d-4f27-95e1-2b7d4c9a1f83" />
+  <Project Path="ReluctersteSDK.Debugger/ReluctersteSDK.Debugger.csproj" Id="46718af1-4ad0-4247-8566-a5b559b886de" />
+  <Project Path="ReluctersteSDK.EventSystem.Test/ReluctersteSDK.EventSystem.Test.csproj" />
   <Project Path="ReluctersteSDK.EventSystem/ReluctersteSDK.EventSystem.csproj" Id="c1f89d84-f9da-4770-b75b-0beadf4e92c1" />
-  <Project Path="ReluctersteSDK.LlmHelper/ReluctersteSDK.LlmHelper.csproj" Id="5eeadae5-2766-4cbb-b664-40d60be313ba" />
-  <Project Path="ReluctersteSDK.MathTool/ReluctersteSDK.MathTool.csproj" Id="1812d505-addf-4eea-9655-49a2799bd82c" />
-  <Project Path="ReluctersteSDK.Monogame/ReluctersteSDK.Game.csproj" Id="97038d21-c9ee-46c2-b4f7-13d4ff885333" />
-  <Project Path="ReluctersteSDK.PathHelper.Test/ReluctersteSDK.PathHelper.Test.csproj" Id="86fee621-758a-4181-95ca-5a34548d3076" />
-  <Project Path="ReluctersteSDK.PathHelper/ReluctersteSDK.PathHelper.csproj" Id="d52ba151-ce46-41cb-92f4-5e7b13d7f61a" />
-  <Project Path="ReluctersteSDK.RegistryKit/ReluctersteSDK.RegistryKit.csproj" Id="b2df8951-fbca-4ede-b3b4-a793edc432bc" />
-  <Project Path="ReluctersteSDK.SimpleSqliteORM/ReluctersteSDK.SimpleSqliteORM.csproj" Id="07327dd1-c2da-40b8-8d63-b631f6c8bc5c" />
+  <Project Path="ReluctersteSDK.Game.Test/ReluctersteSDK.Game.Test.csproj" Id="5f3c2a71-8b4d-4e6f-9a10-7c8d5e2b4a63" />
+  <Project Path="ReluctersteSDK.Llm/ReluctersteSDK.Llm.csproj" Id="5eeadae5-2766-4cbb-b664-40d60be313ba" />
+  <Project Path="ReluctersteSDK.Math.Test/ReluctersteSDK.Math.Test.csproj" />
+  <Project Path="ReluctersteSDK.Math/ReluctersteSDK.Math.csproj" Id="1812d505-addf-4eea-9655-49a2799bd82c" />
+  <Project Path="ReluctersteSDK.Game/ReluctersteSDK.Game.csproj" Id="97038d21-c9ee-46c2-b4f7-13d4ff885333" />
+  <Project Path="ReluctersteSDK.Paths.Test/ReluctersteSDK.Paths.Test.csproj" Id="86fee621-758a-4181-95ca-5a34548d3076" />
+  <Project Path="ReluctersteSDK.Paths/ReluctersteSDK.Paths.csproj" Id="d52ba151-ce46-41cb-92f4-5e7b13d7f61a" />
+  <Project Path="ReluctersteSDK.Registry/ReluctersteSDK.Registry.csproj" Id="b2df8951-fbca-4ede-b3b4-a793edc432bc" />
+  <Project Path="ReluctersteSDK.Registry.Test/ReluctersteSDK.Registry.Test.csproj" />
+  <Project Path="ReluctersteSDK.Sqlite/ReluctersteSDK.Sqlite.csproj" Id="07327dd1-c2da-40b8-8d63-b631f6c8bc5c" />
+  <Project Path="ReluctersteSDK.Sqlite.Test/ReluctersteSDK.Sqlite.Test.csproj" />
   <Project Path="ReluctersteSDK/ReluctersteSDK.csproj" />
 </Solution>

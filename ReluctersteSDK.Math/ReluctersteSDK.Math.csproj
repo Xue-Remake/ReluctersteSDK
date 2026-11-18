@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<Version>0.13.0.0</Version>
+	<Authors>Xue-Remake</Authors>
+	<PackageId>ReluctersteSDK.Math</PackageId>
+	<AssemblyName>ReluctersteSDK.Math</AssemblyName>
+	<RootNamespace>ReluctersteSDK.Math</RootNamespace>
+	<Description>零 MonoGame 依赖的 2D 实用数学库：向量、2D 矩阵、几何体、插值缓动、数值工具、可种子随机数与噪声。</Description>
+	<GenerateDocumentationFile>True</GenerateDocumentationFile>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<Copyright>Copyright © 2026 Xue-Remake &lt;xuemincanremake@gmail.com&gt;. All rights reserved.</Copyright>
+	<PackageOutputPath>E:\Work\资产仓库\NuGetPackage</PackageOutputPath>
+  </PropertyGroup>
+
+</Project>

@@ -1,15 +1,18 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
+    <PackageId>ReluctersteSDK</PackageId>
+    <AssemblyName>ReluctersteSDK</AssemblyName>
+    <RootNamespace>ReluctersteSDK</RootNamespace>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Authors>Xue-Remake</Authors>
-		<Version>0.8.6.3</Version>
+		<Version>0.13.0.0</Version>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<Company>Relucterste Digital Studio</Company>
 		<Copyright>Copyright © 2026 Xue-Remake &lt;xuemincanremake@gmail.com&gt;. All rights reserved.</Copyright>
-		<Description>一个简单的开发工具，目前有CommandHelper、CoordinatesPackage、LlmHelper、QuickRandom等小型工具、自制ORM：SimpleSqliteORM</Description>
+		<Description>ReluctersteSDK 聚合包：注册表、路径、数据结构、2D 数学、ECS、事件总线、SQLite ORM、配置管理、控制台命令与 LLM 客户端。</Description>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -30,21 +33,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
-		<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.5.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
+		<PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.6.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\ReluctersteSDK.ConfigDriver\ReluctersteSDK.ConfigDriver.csproj" />
-	  <ProjectReference Include="..\ReluctersteSDK.Console\ReluctersteSDK.ConsoleHelper.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.Config\ReluctersteSDK.Config.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.Commands\ReluctersteSDK.Commands.csproj" />
 	  <ProjectReference Include="..\ReluctersteSDK.DataStructures\ReluctersteSDK.DataStructures.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.Debugger\ReluctersteSDK.Debugger.csproj" />
 	  <ProjectReference Include="..\ReluctersteSDK.EventSystem\ReluctersteSDK.EventSystem.csproj" />
-	  <ProjectReference Include="..\ReluctersteSDK.LlmHelper\ReluctersteSDK.LlmHelper.csproj" />
-	  <ProjectReference Include="..\ReluctersteSDK.MathTool\ReluctersteSDK.MathTool.csproj" />
-	  <ProjectReference Include="..\ReluctersteSDK.Monogame\ReluctersteSDK.Game.csproj" />
-	  <ProjectReference Include="..\ReluctersteSDK.PathHelper\ReluctersteSDK.PathHelper.csproj" />
-	  <ProjectReference Include="..\ReluctersteSDK.RegistryKit\ReluctersteSDK.RegistryKit.csproj" />
-	  <ProjectReference Include="..\ReluctersteSDK.SimpleSqliteORM\ReluctersteSDK.SimpleSqliteORM.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.Llm\ReluctersteSDK.Llm.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.Math\ReluctersteSDK.Math.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.Game\ReluctersteSDK.Game.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.Paths\ReluctersteSDK.Paths.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.Registry\ReluctersteSDK.Registry.csproj" />
+	  <ProjectReference Include="..\ReluctersteSDK.Sqlite\ReluctersteSDK.Sqlite.csproj" />
 	</ItemGroup>
 
 </Project>

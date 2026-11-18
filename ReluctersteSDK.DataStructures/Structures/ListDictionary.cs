@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Text.Json.Serialization;
+using ReluctersteSDK.DataStructures.Json;
 
 namespace ReluctersteSDK.DataStructures.Structures
 {
@@ -9,6 +11,7 @@ namespace ReluctersteSDK.DataStructures.Structures
     /// </summary>
     /// <typeparam name="TKey">字典中键的类型。</typeparam>
     /// <typeparam name="TValue">字典中值的类型。</typeparam>
+    [JsonConverter(typeof(ListDictionaryConverterFactory))]
     public class ListDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>, IDisposable
     {
         private readonly List<KeyValuePair<TKey, TValue>> _list;
@@ -185,6 +188,51 @@ namespace ReluctersteSDK.DataStructures.Structures
 
         #endregion
 
+        #region 键与值集合获取 (GetKeys / GetVals)
+        /// <summary>
+        /// 获取集合中所有键的列表快照。
+        /// </summary>
+        /// <returns>包含集合中所有键的 <see cref="List{TKey}"/>。</returns>
+        public List<TKey> GetKeys()
+        {
+            _lock.EnterReadLock();
+            try
+            {
+                var keys = new List<TKey>(_list.Count);
+                for (int i = 0; i < _list.Count; i++)
+                {
+                    keys.Add(_list[i].Key);
+                }
+                return keys;
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
+        }
+        /// <summary>
+        /// 获取集合中所有值的列表快照。
+        /// </summary>
+        /// <returns>包含集合中所有值的 <see cref="List{TValue}"/>。</returns>
+        public List<TValue> GetVals()
+        {
+            _lock.EnterReadLock();
+            try
+            {
+                var vals = new List<TValue>(_list.Count);
+                for (int i = 0; i < _list.Count; i++)
+                {
+                    vals.Add(_list[i].Value);
+                }
+                return vals;
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
+        }
+        #endregion
+
         #region 列表标准操作 (Add, Remove, Clear)
 
         /// <summary>
@@ -203,6 +251,43 @@ namespace ReluctersteSDK.DataStructures.Structures
                     throw new ArgumentException($"An item with the same key has already been added. Key: {key}");
 
                 _list.Add(new KeyValuePair<TKey, TValue>(key, value));
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
+        }
+
+        public void Add(ValueTuple<TKey, TValue> temp)
+        {
+            _lock.EnterWriteLock();
+            try
+            {
+                if (FindIndex(temp.Item1) >= 0)
+                    throw new ArgumentException($"An item with the same key has already been added. Key: {temp.Item1}");
+
+                _list.Add(new KeyValuePair<TKey, TValue>(temp.Item1, temp.Item2));
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
+        /// 将指定的键值对元素追加到集合末尾。
+        /// </summary>
+        /// <param name="pair">要添加的键值对。</param>
+        /// <exception cref="ArgumentException">集合中已存在具有相同键的元素。</exception>
+        public void Add(KeyValuePair<TKey, TValue> pair)
+        {
+            _lock.EnterWriteLock();
+            try
+            {
+                if (FindIndex(pair.Key) >= 0)
+                    throw new ArgumentException($"An item with the same key has already been added. Key: {pair.Key}");
+
+                _list.Add(pair);
             }
             finally
             {
@@ -261,6 +346,87 @@ namespace ReluctersteSDK.DataStructures.Structures
             _lock.EnterWriteLock();
             try { _list.Clear(); }
             finally { _lock.ExitWriteLock(); }
+        }
+
+        /// <summary>
+        /// 使用默认的键比较器，按键对所有元素进行排序。
+        /// </summary>
+        public void Sort()
+        {
+            _lock.EnterWriteLock();
+            try
+            {
+                _list.Sort((a, b) => Comparer<TKey>.Default.Compare(a.Key, b.Key));
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
+        /// 使用指定的比较委托对整个集合进行排序。
+        /// </summary>
+        /// <param name="comparison">比较两个键值对时使用的 <see cref="Comparison{T}"/> 委托。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="comparison"/> 为 null。</exception>
+        public void Sort(Comparison<KeyValuePair<TKey, TValue>> comparison)
+        {
+            if (comparison == null) throw new ArgumentNullException(nameof(comparison));
+
+            _lock.EnterWriteLock();
+            try
+            {
+                _list.Sort(comparison);
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
+        /// 使用指定的比较器对整个集合进行排序。
+        /// </summary>
+        /// <param name="comparer">比较键值对时使用的 <see cref="IComparer{T}"/> 实现。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="comparer"/> 为 null。</exception>
+        public void Sort(IComparer<KeyValuePair<TKey, TValue>> comparer)
+        {
+            if (comparer == null) throw new ArgumentNullException(nameof(comparer));
+
+            _lock.EnterWriteLock();
+            try
+            {
+                _list.Sort(comparer);
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
+        }
+
+        /// <summary>
+        /// 根据 LINQ 键选择表达式对整个集合进行排序。
+        /// </summary>
+        /// <typeparam name="TSortKey">由键选择表达式返回的排序键类型。</typeparam>
+        /// <param name="keySelector">用于从每个键值对中提取排序键的表达式。</param>
+        /// <param name="descending">是否按降序排序，默认为 false（升序）。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="keySelector"/> 为 null。</exception>
+        public void Sort<TSortKey>(Func<KeyValuePair<TKey, TValue>, TSortKey> keySelector, bool descending = false)
+        {
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
+
+            _lock.EnterWriteLock();
+            try
+            {
+                if (descending)
+                    _list.Sort((a, b) => Comparer<TSortKey>.Default.Compare(keySelector(b), keySelector(a)));
+                else
+                    _list.Sort((a, b) => Comparer<TSortKey>.Default.Compare(keySelector(a), keySelector(b)));
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         /// <summary>

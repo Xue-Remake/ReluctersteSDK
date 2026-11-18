@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <PackageId>ReluctersteSDK.Sqlite</PackageId>
+    <AssemblyName>ReluctersteSDK.Sqlite</AssemblyName>
+    <RootNamespace>ReluctersteSDK.Sqlite</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<Version>0.13.0.0</Version>
+	<Authors>Xue-Remake</Authors>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<Copyright>Copyright © 2026 Xue-Remake &lt;xuemincanremake@gmail.com&gt;. All rights reserved.</Copyright>
+	<Description>一个简易的SQLite ORM，提供两种数据库管理方式：通过特性与反射进行映射，以及直接按列管理数据。</Description>
+	<PackageOutputPath>E:\Work\资产仓库\NuGetPackage</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ReluctersteSDK.Paths\ReluctersteSDK.Paths.csproj" />
+  </ItemGroup>
+
+</Project>

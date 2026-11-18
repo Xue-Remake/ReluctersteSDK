@@ -1,10 +1,13 @@
 using System.Collections;
+using System.Text.Json.Serialization;
+using ReluctersteSDK.DataStructures.Json;
 
 namespace ReluctersteSDK.DataStructures.Structures
 {
     /// <summary>
     /// 双向字典
     /// </summary>
+    [JsonConverter(typeof(BiDictionaryConverterFactory))]
     public class BiDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
         where TKey : notnull
         where TValue : notnull
@@ -94,6 +97,18 @@ namespace ReluctersteSDK.DataStructures.Structures
             _forward.Add(temp.Item1, temp.Item2);
             _reverse.Add(temp.Item2, temp.Item1);
         }
+        public void Add(KeyValuePair<TKey, TValue> pair)
+        {
+            if (pair.Key == null || pair.Value == null) throw new ArgumentNullException(nameof(pair));
+            if (_forward.ContainsKey(pair.Key))
+                throw new ArgumentException($"Key '{pair.Key}' 已经存在。");
+
+            if (_reverse.ContainsKey(pair.Value))
+                throw new ArgumentException($"Value '{pair.Value}' 已经存在（BiDictionary 要求 Value 也是唯一的）。");
+
+            _forward.Add(pair.Key, pair.Value);
+            _reverse.Add(pair.Value, pair.Key);
+        }
         public void AddOrUpdate(TKey key, TValue value)
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
@@ -149,6 +164,75 @@ namespace ReluctersteSDK.DataStructures.Structures
             _forward.Clear();
             _reverse.Clear();
         }
+
+        #region 排序方法 (Sort)
+
+        /// <summary>
+        /// 使用默认的键比较器，按键对所有键值对进行排序。
+        /// </summary>
+        public void Sort() => Sort((a, b) => Comparer<TKey>.Default.Compare(a.Key, b.Key));
+
+        /// <summary>
+        /// 使用指定的比较委托对所有键值对进行排序。
+        /// </summary>
+        /// <param name="comparison">比较两个键值对时使用的 <see cref="Comparison{T}"/> 委托。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="comparison"/> 为 null。</exception>
+        public void Sort(Comparison<KeyValuePair<TKey, TValue>> comparison)
+        {
+            if (comparison == null) throw new ArgumentNullException(nameof(comparison));
+
+            var sorted = new List<KeyValuePair<TKey, TValue>>(_forward);
+            sorted.Sort(comparison);
+            RebuildForward(sorted);
+        }
+
+        /// <summary>
+        /// 使用指定的比较器对所有键值对进行排序。
+        /// </summary>
+        /// <param name="comparer">比较键值对时使用的 <see cref="IComparer{T}"/> 实现。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="comparer"/> 为 null。</exception>
+        public void Sort(IComparer<KeyValuePair<TKey, TValue>> comparer)
+        {
+            if (comparer == null) throw new ArgumentNullException(nameof(comparer));
+
+            var sorted = new List<KeyValuePair<TKey, TValue>>(_forward);
+            sorted.Sort(comparer);
+            RebuildForward(sorted);
+        }
+
+        /// <summary>
+        /// 根据 LINQ 键选择表达式对所有键值对进行排序。
+        /// </summary>
+        /// <typeparam name="TSortKey">由键选择表达式返回的排序键类型。</typeparam>
+        /// <param name="keySelector">用于从每个键值对中提取排序键的表达式。</param>
+        /// <param name="descending">是否按降序排序，默认为 false（升序）。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="keySelector"/> 为 null。</exception>
+        public void Sort<TSortKey>(Func<KeyValuePair<TKey, TValue>, TSortKey> keySelector, bool descending = false)
+        {
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
+
+            var sorted = new List<KeyValuePair<TKey, TValue>>(_forward);
+            sorted.Sort((a, b) =>
+            {
+                int result = Comparer<TSortKey>.Default.Compare(keySelector(a), keySelector(b));
+                return descending ? -result : result;
+            });
+            RebuildForward(sorted);
+        }
+
+        /// <summary>
+        /// 按排序后的顺序重建正向字典（键值对映射关系不变，仅调整枚举顺序）。
+        /// </summary>
+        private void RebuildForward(List<KeyValuePair<TKey, TValue>> sorted)
+        {
+            _forward.Clear();
+            foreach (var kvp in sorted)
+            {
+                _forward.Add(kvp.Key, kvp.Value);
+            }
+        }
+
+        #endregion
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => _forward.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
